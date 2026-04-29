@@ -1,0 +1,1 @@
+# EdgeVisionNet AI Module
