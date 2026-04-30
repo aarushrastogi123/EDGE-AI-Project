@@ -37,7 +37,8 @@ export interface TelemetryHistory {
   battery: number
   temp: number
   power_w: number
-  charging: boolean
+  charging: number   // 0 | 1 for chart compatibility
+  [key: string]: number | string
 }
 
 export interface Device {

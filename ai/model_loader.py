@@ -31,7 +31,7 @@ def load_keras_model(model_name: str):
         if cache_key in _model_cache:
             return _model_cache[cache_key]
 
-    print(f"📦 Loading {model_name}...")
+    print(f"[LOADING] {model_name}...")
 
     if model_name == "MobileNetV2":
         model = tf.keras.applications.MobileNetV2(weights="imagenet", include_top=True)
@@ -43,7 +43,7 @@ def load_keras_model(model_name: str):
         if os.path.isdir(saved):
             model = tf.saved_model.load(saved)
         else:
-            print(f"  ⚠️ Custom weights not found. Using MobileNetV2 stand-in.")
+            print(f"  [WARN] Custom weights not found. Using MobileNetV2 stand-in.")
             model = tf.keras.applications.MobileNetV2(weights="imagenet", include_top=True)
 
     with _cache_lock:

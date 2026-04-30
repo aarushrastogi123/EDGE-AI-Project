@@ -6,9 +6,13 @@ export const metadata: Metadata = {
   description: 'Real-time edge AI inference with live device telemetry, energy analytics, and cloud comparison.',
   keywords: ['edge AI', 'energy intelligence', 'telemetry', 'machine learning', 'IoT'],
   authors: [{ name: 'EdgeVisionNet Team' }],
-  themeColor: '#0A0F1E',
-  viewport: 'width=device-width, initial-scale=1',
   icons: { icon: '/favicon.ico' },
+}
+
+export const viewport = {
+  themeColor: '#0A0F1E',
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({

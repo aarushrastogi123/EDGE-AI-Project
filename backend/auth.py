@@ -1,15 +1,15 @@
 """
 EdgeVisionNet Platform — Authentication & JWT Utilities
-Handles password hashing, token creation, and current-user extraction.
+Uses bcrypt directly (bypasses passlib incompatibility with bcrypt>=4.0 on Python 3.13).
 """
 
 from datetime import datetime, timedelta
 from typing import Optional
 
+import bcrypt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from database import User, get_db
@@ -17,26 +17,34 @@ from database import User, get_db
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-SECRET_KEY              = "edgevisionnet-jwt-secret-key-2024-change-in-production"
-ALGORITHM               = "HS256"
-ACCESS_TOKEN_EXPIRE_HOURS = 24  # Tokens valid for 24 hours
+SECRET_KEY               = "edgevisionnet-jwt-secret-key-2024-change-in-production"
+ALGORITHM                = "HS256"
+ACCESS_TOKEN_EXPIRE_HOURS = 24
 
-pwd_context    = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme  = OAuth2PasswordBearer(tokenUrl="/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
 # ---------------------------------------------------------------------------
-# Password Utilities
+# Password Utilities (direct bcrypt — no passlib)
 # ---------------------------------------------------------------------------
 
 def hash_password(plain_password: str) -> str:
     """Hash a plain-text password with bcrypt."""
-    return pwd_context.hash(plain_password)
+    password_bytes = plain_password.encode("utf-8")
+    salt = bcrypt.gensalt(rounds=12)
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    return hashed.decode("utf-8")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a plain-text password against its bcrypt hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        return bcrypt.checkpw(
+            plain_password.encode("utf-8"),
+            hashed_password.encode("utf-8"),
+        )
+    except Exception:
+        return False
 
 
 # ---------------------------------------------------------------------------
@@ -49,7 +57,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 
     Args:
         data: Payload to encode (typically {"sub": email}).
-        expires_delta: Custom expiry, defaults to ACCESS_TOKEN_EXPIRE_HOURS.
+        expires_delta: Custom expiry; defaults to ACCESS_TOKEN_EXPIRE_HOURS.
 
     Returns:
         Signed JWT string.

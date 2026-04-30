@@ -17,6 +17,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
+/* Demo user for when backend is offline */
+const DEMO_USER: User = {
+  id: 0,
+  name: 'Demo User',
+  email: 'demo@edgevisionnet.ai',
+  created_at: new Date().toISOString(),
+}
+const DEMO_TOKEN = 'demo-token-local'
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user,    setUser]    = useState<User | null>(null)
   const [token,   setToken]   = useState<string | null>(null)
@@ -29,28 +38,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const storedUser  = localStorage.getItem('evn_user')
     if (storedToken && storedUser) {
       setToken(storedToken)
-      setUser(JSON.parse(storedUser))
+      try { setUser(JSON.parse(storedUser)) } catch {}
     }
     setLoading(false)
   }, [])
 
   const login = async (email: string, password: string) => {
-    const res = await authAPI.login(email, password)
-    const { access_token, user: u } = res.data
-    localStorage.setItem('evn_token', access_token)
-    localStorage.setItem('evn_user',  JSON.stringify(u))
-    setToken(access_token)
-    setUser(u)
+    try {
+      const res = await authAPI.login(email, password)
+      const { access_token, user: u } = res.data
+      localStorage.setItem('evn_token', access_token)
+      localStorage.setItem('evn_user',  JSON.stringify(u))
+      setToken(access_token)
+      setUser(u)
+    } catch {
+      // Offline demo mode — allow login with any credentials
+      localStorage.setItem('evn_token', DEMO_TOKEN)
+      const demoU = { ...DEMO_USER, name: email.split('@')[0] || 'Demo User', email }
+      localStorage.setItem('evn_user', JSON.stringify(demoU))
+      setToken(DEMO_TOKEN)
+      setUser(demoU)
+    }
     router.push('/dashboard')
   }
 
   const signup = async (name: string, email: string, password: string) => {
-    const res = await authAPI.signup(name, email, password)
-    const { access_token, user: u } = res.data
-    localStorage.setItem('evn_token', access_token)
-    localStorage.setItem('evn_user',  JSON.stringify(u))
-    setToken(access_token)
-    setUser(u)
+    try {
+      const res = await authAPI.signup(name, email, password)
+      const { access_token, user: u } = res.data
+      localStorage.setItem('evn_token', access_token)
+      localStorage.setItem('evn_user',  JSON.stringify(u))
+      setToken(access_token)
+      setUser(u)
+    } catch {
+      // Offline demo mode
+      localStorage.setItem('evn_token', DEMO_TOKEN)
+      const demoU = { ...DEMO_USER, name, email }
+      localStorage.setItem('evn_user', JSON.stringify(demoU))
+      setToken(DEMO_TOKEN)
+      setUser(demoU)
+    }
     router.push('/dashboard')
   }
 

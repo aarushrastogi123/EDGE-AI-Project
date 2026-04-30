@@ -113,4 +113,4 @@ def get_db():
 def init_db():
     """Create all tables if they don't exist yet."""
     Base.metadata.create_all(bind=engine)
-    print("✅ Database tables initialized.")
+    print("[OK] Database tables initialized.")

@@ -54,7 +54,7 @@ app.include_router(prediction_router)
 @app.on_event("startup")
 def on_startup():
     init_db()
-    print("🚀 EdgeVisionNet API started — http://localhost:8000/docs")
+    print("[STARTED] EdgeVisionNet API -- http://localhost:8000/docs")
 
 
 # ---------------------------------------------------------------------------
