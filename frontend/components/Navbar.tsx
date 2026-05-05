@@ -2,17 +2,28 @@
 
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Bell, User, ChevronDown, Settings, LogOut, Shield, Cpu } from 'lucide-react'
+import { Search, Bell, User, ChevronDown, Settings, LogOut, Shield, Cpu, LayoutDashboard, BarChart3, Brain, Monitor, Zap, FileBarChart2 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 interface NavbarProps {
   title?: string
   subtitle?: string
 }
 
+const navItems = [
+  { href: '/dashboard',  label: 'Dashboard',     icon: LayoutDashboard },
+  { href: '/analytics',  label: 'Analytics',     icon: BarChart3 },
+  { href: '/predict',    label: 'AI Predict',    icon: Brain },
+  { href: '/devices',    label: 'Devices',       icon: Monitor },
+  { href: '/compare',    label: 'Compare',       icon: Zap },
+  { href: '/reports',    label: 'Reports',       icon: FileBarChart2 },
+]
+
 export default function Navbar({ title = 'Dashboard', subtitle }: NavbarProps) {
   const { user, logout } = useAuth()
+  const pathname = usePathname()
   const [search,       setSearch]       = useState('')
   const [showProfile,  setShowProfile]  = useState(false)
   const [showNotifs,   setShowNotifs]   = useState(false)
@@ -26,28 +37,50 @@ export default function Navbar({ title = 'Dashboard', subtitle }: NavbarProps) {
   const unreadCount = notifications.filter(n => n.unread).length
 
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between px-6 py-3 border-b border-white/5 bg-[#090E1C]/80 backdrop-blur-xl">
-      {/* Left: Title */}
-      <div>
-        <h2 className="text-base font-semibold text-slate-100">{title}</h2>
-        {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
-      </div>
-
-      {/* Center: Search */}
-      <div className="relative hidden md:block">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-        <input
-          type="text"
-          placeholder="Search metrics, devices…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="navbar-search pl-8"
-          id="navbar-search"
-        />
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 border-b border-cyan-400/20 bg-bg/95 backdrop-blur-xl">
+      {/* Left: Brand / Title */}
+      <div className="flex items-center gap-8">
+        <Link href="/dashboard" className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-none bg-gradient-to-br from-cyan-400/20 to-transparent flex items-center justify-center glow-blue flex-shrink-0">
+            <Cpu size={16} className="text-cyan-400" />
+          </div>
+          <span className="font-bold text-glow-cyan text-cyan-400 uppercase tracking-widest font-mono hidden sm:block tracking-tight text-lg">EdgeVisionNet</span>
+        </Link>
+        
+        {/* Main Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-1">
+          {navItems.map(item => {
+            const active = pathname === item.href
+            return (
+              <Link key={item.href} href={item.href} className="relative px-3 py-2 rounded-none group transition-colors hover:bg-cyan-400/5">
+                <div className="flex items-center gap-2">
+                  <item.icon size={15} className={`${active ? 'text-cyan-400' : 'text-cyan-400/70 group-hover:text-cyan-400'}`} />
+                  <span className={`text-xs font-mono uppercase tracking-wider ${active ? 'text-cyan-400' : 'text-cyan-400/70 group-hover:text-cyan-400'}`}>{item.label}</span>
+                </div>
+                {active && (
+                  <motion.div layoutId="nav-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-400 rounded-t-full" />
+                )}
+              </Link>
+            )
+          })}
+        </nav>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
+        {/* Search */}
+        <div className="relative hidden xl:block mr-2">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-400/50" />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="navbar-search pl-8 bg-cyan-400/5"
+            id="navbar-search"
+          />
+        </div>
+
         {/* Notifications */}
         <div className="relative">
           <motion.button
@@ -55,11 +88,11 @@ export default function Navbar({ title = 'Dashboard', subtitle }: NavbarProps) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => { setShowNotifs(!showNotifs); setShowProfile(false) }}
-            className="relative p-2 rounded-xl glass-card text-slate-400 hover:text-slate-200"
+            className="relative p-2 rounded-none bg-cyan-400/5 border border-cyan-400/30 text-cyan-400/70 hover:text-cyan-400 transition-colors"
           >
             <Bell size={18} />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-cyan-500 text-[9px] font-bold text-white flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-pink-500 text-[9px] font-bold text-cyan-400 flex items-center justify-center">
                 {unreadCount}
               </span>
             )}
@@ -72,21 +105,20 @@ export default function Navbar({ title = 'Dashboard', subtitle }: NavbarProps) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 top-12 w-80 glass-card border border-white/8 overflow-hidden"
-                style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}
+                className="absolute right-0 top-12 w-80 glass-card border border-cyan-400/30 overflow-hidden"
               >
-                <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-slate-200">Notifications</span>
-                  <span className="text-xs text-cyan-400 cursor-pointer hover:text-cyan-300">Mark all read</span>
+                <div className="px-4 py-3 border-b border-cyan-400/20 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-cyan-400">Notifications</span>
+                  <span className="text-xs text-cyan-400 cursor-pointer hover:text-cyan-400/80">Mark all read</span>
                 </div>
                 {notifications.map(n => (
-                  <div key={n.id} className={`flex items-start gap-3 px-4 py-3 border-b border-white/5 hover:bg-white/3 transition-colors cursor-pointer ${n.unread ? 'bg-cyan-500/3' : ''}`}>
+                  <div key={n.id} className={`flex items-start gap-3 px-4 py-3 border-b border-cyan-400/20 hover:bg-cyan-400/5 transition-colors cursor-pointer ${n.unread ? 'bg-blue-500/5' : ''}`}>
                     <span className="text-lg flex-shrink-0 mt-0.5">{n.icon}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-slate-300">{n.text}</p>
-                      <p className="text-[10px] text-slate-600 mt-0.5">{n.time}</p>
+                      <p className="text-xs text-cyan-400/90">{n.text}</p>
+                      <p className="text-[10px] text-cyan-400/50 mt-0.5">{n.time}</p>
                     </div>
-                    {n.unread && <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 flex-shrink-0 mt-1.5" />}
+                    {n.unread && <div className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0 mt-1.5" />}
                   </div>
                 ))}
               </motion.div>
@@ -101,15 +133,15 @@ export default function Navbar({ title = 'Dashboard', subtitle }: NavbarProps) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => { setShowProfile(!showProfile); setShowNotifs(false) }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl glass-card hover:border-cyan-500/20 transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-none bg-cyan-400/5 border border-cyan-400/30 hover:border-cyan-400/30 transition-colors"
           >
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center">
-              <User size={14} className="text-white" />
+            <div className="w-7 h-7 rounded-none bg-gradient-to-br from-cyan-400/20 to-transparent flex items-center justify-center">
+              <User size={14} className="text-cyan-400" />
             </div>
-            <span className="text-sm font-medium text-slate-300 hidden sm:block max-w-[100px] truncate">
+            <span className="text-xs font-mono uppercase tracking-wider text-cyan-400/90 hidden sm:block max-w-[100px] truncate">
               {user?.name?.split(' ')[0] || 'User'}
             </span>
-            <ChevronDown size={12} className="text-slate-500" />
+            <ChevronDown size={12} className="text-cyan-400/50" />
           </motion.button>
 
           <AnimatePresence>
@@ -119,29 +151,22 @@ export default function Navbar({ title = 'Dashboard', subtitle }: NavbarProps) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 top-12 w-56 glass-card border border-white/8 overflow-hidden"
-                style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}
+                className="absolute right-0 top-12 w-56 glass-card border border-cyan-400/30 overflow-hidden"
               >
-                <div className="px-4 py-3 border-b border-white/5">
-                  <p className="text-sm font-semibold text-slate-200">{user?.name}</p>
-                  <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                <div className="px-4 py-3 border-b border-cyan-400/20">
+                  <p className="text-sm font-semibold text-cyan-400">{user?.name}</p>
+                  <p className="text-xs text-cyan-400/50 truncate">{user?.email}</p>
                 </div>
                 <div className="py-1">
-                  <Link href="/settings" onClick={() => setShowProfile(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-white/4 transition-colors">
+                  <Link href="/settings" onClick={() => setShowProfile(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-cyan-400/70 hover:text-cyan-400 hover:bg-cyan-400/5 transition-colors">
                     <Settings size={15} /> Settings
                   </Link>
-                  <Link href="/dashboard" onClick={() => setShowProfile(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-white/4 transition-colors">
-                    <Cpu size={15} /> Dashboard
-                  </Link>
-                  <Link href="/reports" onClick={() => setShowProfile(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 hover:bg-white/4 transition-colors">
-                    <Shield size={15} /> Reports
-                  </Link>
                 </div>
-                <div className="border-t border-white/5 py-1">
+                <div className="border-t border-cyan-400/20 py-1">
                   <button
                     id="navbar-logout-btn"
                     onClick={() => { setShowProfile(false); logout() }}
-                    className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/8 transition-colors"
+                    className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
                   >
                     <LogOut size={15} /> Sign Out
                   </button>
@@ -152,7 +177,7 @@ export default function Navbar({ title = 'Dashboard', subtitle }: NavbarProps) {
         </div>
       </div>
 
-      {/* Click outside to close */}
+      {/* Click outside overlay */}
       {(showProfile || showNotifs) && (
         <div
           className="fixed inset-0 z-[-1]"

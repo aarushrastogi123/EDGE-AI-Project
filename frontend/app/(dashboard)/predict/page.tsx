@@ -83,28 +83,28 @@ export default function PredictPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-100">
-          AI <span className="gradient-text">Prediction</span>
+        <h1 className="text-2xl font-bold text-cyan-400">
+          AI <span className="text-glow-cyan text-cyan-400 uppercase tracking-widest font-mono">Prediction</span>
         </h1>
-        <p className="text-sm text-slate-500 mt-0.5">Upload an image and run EdgeVisionNet inference</p>
+        <p className="text-sm text-cyan-400/50 mt-0.5">Upload an image and run EdgeVisionNet inference</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Upload + Config */}
         <div className="space-y-4">
           {/* Model Selector */}
-          <div className="glass-card p-4">
-            <label className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3 block">Select Model</label>
+          <div className="scifi-card p-4">
+            <label className="text-xs font-medium text-cyan-400/70 uppercase tracking-wider mb-3 block">Select Model</label>
             <div className="grid grid-cols-2 gap-2">
               {MODELS.map((m) => (
                 <button
                   key={m}
                   id={`model-btn-${m.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
                   onClick={() => setSelectedModel(m)}
-                  className={`p-3 rounded-xl text-xs font-medium border transition-all text-left ${
+                  className={`p-3 rounded-none text-xs font-medium border transition-all text-left ${
                     selectedModel === m
-                      ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-400'
-                      : 'bg-white/3 border-white/8 text-slate-400 hover:border-white/15'
+                      ? 'bg-blue-500/15 border-blue-500/40 text-cyan-400'
+                      : 'bg-white/3 border-white/8 text-cyan-400/70 hover:border-white/15'
                   }`}
                 >
                   <div className="font-semibold mb-0.5">{m}</div>
@@ -123,7 +123,7 @@ export default function PredictPage() {
           <div
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
-            className="glass-card border-2 border-dashed border-white/10 hover:border-cyan-500/40 transition-all cursor-pointer"
+            className="scifi-card border-2 border-dashed border-cyan-400/30 hover:border-blue-500/40 transition-all cursor-pointer"
             onClick={() => fileRef.current?.click()}
           >
             <input
@@ -136,10 +136,10 @@ export default function PredictPage() {
             />
             {preview ? (
               <div className="relative">
-                <img src={preview} alt="Preview" className="w-full h-64 object-cover rounded-2xl" />
+                <img src={preview} alt="Preview" className="w-full h-64 object-cover rounded-none" />
                 <button
                   onClick={(e) => { e.stopPropagation(); setFile(null); setPreview(null); setResult(null) }}
-                  className="absolute top-3 right-3 p-1.5 bg-black/50 rounded-full text-white hover:bg-black/70"
+                  className="absolute top-3 right-3 p-1.5 bg-black/50 rounded-none text-cyan-400 hover:bg-black/70"
                 >
                   <X size={14} />
                 </button>
@@ -147,7 +147,7 @@ export default function PredictPage() {
             ) : (
               <div className="p-10 text-center">
                 <Upload size={36} className="text-slate-600 mx-auto mb-3" />
-                <p className="text-sm text-slate-400 font-medium">Drop image here or click to browse</p>
+                <p className="text-sm text-cyan-400/70 font-medium">Drop image here or click to browse</p>
                 <p className="text-xs text-slate-600 mt-1">JPEG, PNG, WebP supported</p>
               </div>
             )}
@@ -155,8 +155,8 @@ export default function PredictPage() {
 
           {/* Webcam */}
           {webcamActive ? (
-            <div className="glass-card p-4 space-y-3">
-              <video ref={videoRef} className="w-full rounded-xl" autoPlay muted />
+            <div className="scifi-card p-4 space-y-3">
+              <video ref={videoRef} className="w-full rounded-none" autoPlay muted />
               <canvas ref={canvasRef} className="hidden" />
               <div className="flex gap-2">
                 <motion.button
@@ -174,7 +174,7 @@ export default function PredictPage() {
                     const stream = videoRef.current?.srcObject as MediaStream
                     stream?.getTracks().forEach((t) => t.stop())
                   }}
-                  className="btn-secondary px-4 py-2.5 text-sm rounded-xl"
+                  className="btn-secondary px-4 py-2.5 text-sm rounded-none"
                 >
                   <X size={16} />
                 </motion.button>
@@ -184,14 +184,14 @@ export default function PredictPage() {
             <button
               id="webcam-btn"
               onClick={startWebcam}
-              className="btn-secondary w-full py-2.5 text-sm rounded-xl flex items-center justify-center gap-2"
+              className="btn-secondary w-full py-2.5 text-sm rounded-none flex items-center justify-center gap-2"
             >
               <Camera size={16} /> Use Webcam
             </button>
           )}
 
           {error && (
-            <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm">
+            <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-none text-red-400 text-sm">
               <AlertCircle size={16} /> {error}
             </div>
           )}
@@ -204,7 +204,7 @@ export default function PredictPage() {
             className="btn-primary w-full py-3.5 text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-40 relative z-10"
           >
             {loading ? (
-              <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Running inference…</>
+              <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-none animate-spin" /> Running inference…</>
             ) : (
               <><Brain size={18} /> Run {selectedModel} Inference</>
             )}
@@ -223,17 +223,17 @@ export default function PredictPage() {
                 className="space-y-4"
               >
                 {/* Main result */}
-                <div className="glass-card p-6 border border-cyan-500/20">
+                <div className="scifi-card p-6 border border-cyan-400/20">
                   <div className="flex items-center gap-2 mb-4">
                     <CheckCircle size={20} className="text-emerald-400" />
-                    <h3 className="font-semibold text-slate-200">Inference Complete</h3>
+                    <h3 className="font-semibold text-cyan-400">Inference Complete</h3>
                   </div>
                   <div className="text-center py-4">
-                    <p className="text-4xl font-bold gradient-text mb-1">{result.predicted_class}</p>
+                    <p className="text-4xl font-bold text-glow-cyan text-cyan-400 uppercase tracking-widest font-mono mb-1">{result.predicted_class}</p>
                     <div className="flex items-center justify-center gap-2 mt-3">
-                      <div className="flex-1 bg-white/5 rounded-full h-2">
+                      <div className="flex-1 bg-cyan-400/5 rounded-none h-2">
                         <div
-                          className="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 transition-all"
+                          className="h-2 rounded-none bg-gradient-to-r from-blue-400 to-transparent transition-all"
                           style={{ width: `${confidencePct}%` }}
                         />
                       </div>
@@ -241,7 +241,7 @@ export default function PredictPage() {
                         {confidencePct.toFixed(1)}%
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">Confidence score</p>
+                    <p className="text-xs text-cyan-400/50 mt-1">Confidence score</p>
                   </div>
                 </div>
 
@@ -252,33 +252,33 @@ export default function PredictPage() {
                     { label: 'Energy',    value: `${(result.energy_wh * 1e6).toFixed(2)}µWh`, icon: <Zap size={16} />, color: 'text-amber-400' },
                     { label: 'Device W',  value: `${result.device_power_w.toFixed(2)}W`, icon: <Leaf size={16} />,   color: 'text-emerald-400' },
                   ].map((m) => (
-                    <div key={m.label} className="glass-card p-3 text-center">
+                    <div key={m.label} className="scifi-card p-3 text-center">
                       <div className={`flex justify-center mb-1 ${m.color}`}>{m.icon}</div>
                       <p className={`text-lg font-bold ${m.color}`}>{m.value}</p>
-                      <p className="text-[10px] text-slate-500">{m.label}</p>
+                      <p className="text-[10px] text-cyan-400/50">{m.label}</p>
                     </div>
                   ))}
                 </div>
 
                 {/* Top-5 */}
                 {result.top5 && (
-                  <div className="glass-card p-4">
-                    <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Top 5 Predictions</h4>
+                  <div className="scifi-card p-4">
+                    <h4 className="scifi-label text-cyan-400/70 uppercase tracking-wider mb-3">Top 5 Predictions</h4>
                     <div className="space-y-2">
                       {result.top5.map((p, i) => (
                         <div key={i} className="flex items-center gap-3">
                           <span className="text-xs text-slate-600 w-4">{i + 1}</span>
-                          <span className="text-sm text-slate-300 flex-1">{p.class}</span>
-                          <div className="w-24 bg-white/5 rounded-full h-1.5">
+                          <span className="text-sm text-cyan-400/90 flex-1">{p.class}</span>
+                          <div className="w-24 bg-cyan-400/5 rounded-none h-1.5">
                             <div
-                              className="h-1.5 rounded-full"
+                              className="h-1.5 rounded-none"
                               style={{
                                 width: `${Math.max(p.confidence * 100, 2)}%`,
                                 background: i === 0 ? '#00D4FF' : '#7C3AED',
                               }}
                             />
                           </div>
-                          <span className="text-xs text-slate-500 w-12 text-right">
+                          <span className="text-xs text-cyan-400/50 w-12 text-right">
                             {(p.confidence * 100).toFixed(1)}%
                           </span>
                         </div>
@@ -288,9 +288,9 @@ export default function PredictPage() {
                 )}
 
                 {/* Recommendation */}
-                <div className="glass-card p-4 border border-emerald-500/20">
-                  <p className="text-xs text-slate-400 uppercase tracking-wider font-medium mb-1">Recommendation</p>
-                  <p className="text-sm text-slate-300">{result.recommendation}</p>
+                <div className="scifi-card p-4 border border-emerald-500/20">
+                  <p className="text-xs text-cyan-400/70 uppercase tracking-wider font-medium mb-1">Recommendation</p>
+                  <p className="text-sm text-cyan-400/90">{result.recommendation}</p>
                 </div>
               </motion.div>
             ) : (
@@ -298,10 +298,10 @@ export default function PredictPage() {
                 key="placeholder"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="glass-card p-12 text-center h-full flex flex-col items-center justify-center gap-4"
+                className="scifi-card p-12 text-center h-full flex flex-col items-center justify-center gap-4"
               >
                 <Brain size={56} className="text-slate-700" />
-                <p className="text-slate-500">Upload an image and click Run Inference to see results</p>
+                <p className="text-cyan-400/50">Upload an image and click Run Inference to see results</p>
               </motion.div>
             )}
           </AnimatePresence>

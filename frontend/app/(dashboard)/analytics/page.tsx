@@ -76,22 +76,22 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">
-            Historical <span className="gradient-text">Analytics</span>
+          <h1 className="text-2xl font-bold text-cyan-400">
+            Historical <span className="text-glow-cyan text-cyan-400 uppercase tracking-widest font-mono">Analytics</span>
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">Telemetry trends over time</p>
+          <p className="text-sm text-cyan-400/50 mt-0.5">Telemetry trends over time</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {/* Time range selector */}
-          <div className="flex items-center gap-1 glass-card p-1 rounded-xl">
+          <div className="flex items-center gap-1 scifi-card p-1 rounded-none">
             {TIME_OPTIONS.map((opt) => (
               <button
                 key={opt.hours}
                 onClick={() => setHours(opt.hours)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-none text-xs font-medium transition-all ${
                   hours === opt.hours
                     ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                    : 'text-slate-500 hover:text-slate-300'
+                    : 'text-cyan-400/50 hover:text-cyan-400/90'
                 }`}
               >
                 {opt.label}
@@ -102,7 +102,7 @@ export default function AnalyticsPage() {
             id="analytics-refresh-btn"
             whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={fetchHistory}
-            className="btn-secondary px-3 py-2 rounded-xl flex items-center gap-2 text-xs"
+            className="btn-secondary px-3 py-2 rounded-none flex items-center gap-2 text-xs"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
             Refresh
@@ -111,7 +111,7 @@ export default function AnalyticsPage() {
             id="export-csv-btn"
             whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={exportCSV}
-            className="btn-secondary px-3 py-2 rounded-xl flex items-center gap-2 text-xs"
+            className="btn-secondary px-3 py-2 rounded-none flex items-center gap-2 text-xs"
           >
             <Download size={14} />
             CSV
@@ -120,7 +120,7 @@ export default function AnalyticsPage() {
             id="export-pdf-btn"
             whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={exportPDF}
-            className="btn-primary px-3 py-2 rounded-xl flex items-center gap-2 text-xs relative z-10"
+            className="btn-primary px-3 py-2 rounded-none flex items-center gap-2 text-xs relative z-10"
           >
             <Download size={14} />
             PDF Report
@@ -136,9 +136,9 @@ export default function AnalyticsPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: i * 0.05 }}
-            className="glass-card p-4 text-center"
+            className="scifi-card p-4 text-center"
           >
-            <p className="text-xs text-slate-500 mb-1">{card.label}</p>
+            <p className="text-xs text-cyan-400/50 mb-1">{card.label}</p>
             <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>
           </motion.div>
         ))}
@@ -148,13 +148,13 @@ export default function AnalyticsPage() {
       {loading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="skeleton h-52 rounded-2xl" />
+            <div key={i} className="skeleton h-52 rounded-none" />
           ))}
         </div>
       ) : data.length === 0 ? (
-        <div className="glass-card p-12 text-center">
+        <div className="scifi-card p-12 text-center">
           <BarChart3 size={48} className="text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400">No telemetry data for this time range.</p>
+          <p className="text-cyan-400/70">No telemetry data for this time range.</p>
           <p className="text-slate-600 text-sm mt-1">Start the laptop agent and collect some data first.</p>
         </div>
       ) : (

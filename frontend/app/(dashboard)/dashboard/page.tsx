@@ -158,11 +158,11 @@ export default function DashboardPage() {
               </span>
             ) : (
               <span className="badge-offline">
-                <span className="w-2 h-2 rounded-full bg-slate-500" /> Offline
+                <span className="w-2 h-2 rounded-none bg-slate-500" /> Offline
               </span>
             )}
             {isMock && (
-              <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-none">
                 ⚡ Simulated data — Start backend for live metrics
               </span>
             )}
@@ -177,7 +177,7 @@ export default function DashboardPage() {
               <motion.button
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                className="btn-primary px-4 py-2 text-xs font-semibold flex items-center gap-1.5 relative z-10"
+                className="btn-primary px-4 py-2 scifi-label flex items-center gap-1.5 relative z-10"
               >
                 <Brain size={13} /> Run Inference
               </motion.button>
@@ -186,7 +186,7 @@ export default function DashboardPage() {
               <motion.button
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                className="btn-secondary px-4 py-2 text-xs font-medium rounded-xl flex items-center gap-1.5"
+                className="btn-secondary px-4 py-2 text-xs font-medium rounded-none flex items-center gap-1.5"
               >
                 <FileBarChart2 size={13} /> Export Report
               </motion.button>
@@ -195,7 +195,7 @@ export default function DashboardPage() {
               <motion.button
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                className="btn-secondary px-4 py-2 text-xs font-medium rounded-xl flex items-center gap-1.5"
+                className="btn-secondary px-4 py-2 text-xs font-medium rounded-none flex items-center gap-1.5"
               >
                 <Plus size={13} /> Add Device
               </motion.button>
@@ -217,13 +217,13 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 6 }}
           transition={{ duration: 0.4 }}
-          className="glass-card p-4 border border-purple-500/20 flex items-center gap-3"
+          className="scifi-card p-4 border border-purple-500/20 flex items-center gap-3"
           style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.06) 0%, rgba(0,212,255,0.03) 100%)' }}
         >
-          <div className="w-8 h-8 rounded-xl bg-purple-500/15 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-none bg-purple-500/15 flex items-center justify-center flex-shrink-0">
             <Sparkles size={16} className="text-purple-400" />
           </div>
-          <p className="text-sm text-slate-300 flex-1">{AI_INSIGHTS[insightIdx]}</p>
+          <p className="text-sm text-cyan-400/90 flex-1">{AI_INSIGHTS[insightIdx]}</p>
           <Link href="/analytics" className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 flex-shrink-0">
             View <ArrowRight size={12} />
           </Link>
@@ -237,7 +237,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: -10, height: 0 }}
             animate={{ opacity: 1, y: 0, height: 'auto' }}
             exit={{ opacity: 0, y: -10, height: 0 }}
-            className="flex items-center gap-3 px-4 py-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 text-sm"
+            className="flex items-center gap-3 px-4 py-3 bg-amber-500/10 border border-amber-500/30 rounded-none text-amber-400 text-sm"
           >
             <AlertTriangle size={16} className="flex-shrink-0" />
             {alert}
@@ -250,7 +250,7 @@ export default function DashboardPage() {
       {loading ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="skeleton h-28 rounded-2xl" />
+            <div key={i} className="skeleton h-28 rounded-none" />
           ))}
         </div>
       ) : (
@@ -379,15 +379,15 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="glass-card p-6 border border-cyan-500/20"
+          className="scifi-card p-6 border border-cyan-500/20"
         >
           <h3 className="text-lg font-semibold text-cyan-400 mb-2">Start your laptop agent</h3>
-          <p className="text-sm text-slate-400 mb-4">
+          <p className="text-sm text-cyan-400/70 mb-4">
             Run the agent on this machine to stream live telemetry to the dashboard.
           </p>
-          <div className="bg-[#0A0F1E] rounded-xl p-4 font-mono text-sm text-emerald-400 overflow-x-auto">
-            <span className="text-slate-500"># In a new terminal:</span><br />
-            <span className="text-slate-400">cd </span>agent<br />
+          <div className="bg-[#0A0F1E] rounded-none p-4 font-mono text-sm text-emerald-400 overflow-x-auto">
+            <span className="text-cyan-400/50"># In a new terminal:</span><br />
+            <span className="text-cyan-400/70">cd </span>agent<br />
             pip install -r requirements.txt<br />
             python laptop_agent.py
           </div>

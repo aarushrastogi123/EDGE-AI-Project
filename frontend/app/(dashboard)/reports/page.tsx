@@ -106,10 +106,10 @@ export default function ReportsPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="w-2 h-2 rounded-none bg-emerald-400 animate-pulse" />
             <span className="text-xs text-emerald-400 font-medium">Auto-generated</span>
           </div>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-cyan-400/50">
             {new Date().toLocaleDateString('en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
@@ -119,7 +119,7 @@ export default function ReportsPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={exportCSV}
-            className="btn-secondary px-4 py-2 rounded-xl flex items-center gap-2 text-sm"
+            className="btn-secondary px-4 py-2 rounded-none flex items-center gap-2 text-sm"
           >
             <Download size={14} /> Export CSV
           </motion.button>
@@ -128,7 +128,7 @@ export default function ReportsPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => window.print()}
-            className="btn-primary px-4 py-2 rounded-xl flex items-center gap-2 text-sm relative z-10"
+            className="btn-primary px-4 py-2 rounded-none flex items-center gap-2 text-sm relative z-10"
           >
             <Printer size={14} /> PDF Report
           </motion.button>
@@ -145,17 +145,17 @@ export default function ReportsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
-              className={`glass-card p-5 border ${card.border} relative overflow-hidden`}
+              className={`scifi-card p-5 border ${card.border} relative overflow-hidden`}
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${card.bg.replace('bg-', 'from-')} to-transparent opacity-30 pointer-events-none`} />
               <div className="relative">
-                <div className={`w-10 h-10 rounded-xl ${card.bg} flex items-center justify-center mb-3`}>
+                <div className={`w-10 h-10 rounded-none ${card.bg} flex items-center justify-center mb-3`}>
                   <Icon size={20} className={card.color} />
                 </div>
-                <p className="text-xs text-slate-500 mb-1">{card.label}</p>
+                <p className="text-xs text-cyan-400/50 mb-1">{card.label}</p>
                 <p className={`text-xl font-bold ${card.color} mb-1`}>{card.value}</p>
                 <p className="text-[10px] text-slate-600">{card.sub}</p>
-                <div className={`flex items-center gap-1 mt-2 text-xs ${card.trend === 'up' ? 'text-emerald-400' : card.trend === 'down' ? 'text-red-400' : 'text-slate-500'}`}>
+                <div className={`flex items-center gap-1 mt-2 text-xs ${card.trend === 'up' ? 'text-emerald-400' : card.trend === 'down' ? 'text-red-400' : 'text-cyan-400/50'}`}>
                   {card.trend === 'up' ? <TrendingUp size={11} /> : card.trend === 'down' ? <TrendingDown size={11} /> : null}
                   {card.trendVal}
                 </div>
@@ -168,9 +168,9 @@ export default function ReportsPage() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Energy Trend */}
-        <div className="glass-card p-5">
+        <div className="scifi-card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-slate-300">7-Day Energy Overview (Wh)</h3>
+            <h3 className="text-sm font-semibold text-cyan-400/90">7-Day Energy Overview (Wh)</h3>
             <div className="flex items-center gap-3 text-[10px]">
               <span className="flex items-center gap-1"><div className="w-3 h-0.5 rounded bg-emerald-400" /> Saved</span>
               <span className="flex items-center gap-1"><div className="w-3 h-0.5 rounded bg-cyan-400" /> Used</span>
@@ -199,8 +199,8 @@ export default function ReportsPage() {
         </div>
 
         {/* Monthly Predictions */}
-        <div className="glass-card p-5">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">Daily Predictions (Last 30 Days)</h3>
+        <div className="scifi-card p-5">
+          <h3 className="text-sm font-semibold text-cyan-400/90 mb-4">Daily Predictions (Last 30 Days)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={monthlyPredictions} margin={{ top: 4, right: 4, left: -20, bottom: 0 }} barSize={6}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
@@ -218,11 +218,11 @@ export default function ReportsPage() {
       </div>
 
       {/* Recent Predictions Table */}
-      <div className="glass-card overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+      <div className="scifi-card overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-cyan-400/20">
           <div>
-            <h3 className="text-sm font-semibold text-slate-300">Recent Predictions</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Last {recentPredictions.length} inference runs</p>
+            <h3 className="text-sm font-semibold text-cyan-400/90">Recent Predictions</h3>
+            <p className="text-xs text-cyan-400/50 mt-0.5">Last {recentPredictions.length} inference runs</p>
           </div>
           <FileBarChart2 size={18} className="text-slate-600" />
         </div>
@@ -231,7 +231,7 @@ export default function ReportsPage() {
             <thead className="bg-white/2">
               <tr>
                 {['Image', 'Model', 'Predicted Class', 'Confidence', 'Latency', 'Energy', 'Time', 'Status'].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-medium text-cyan-400/50 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -244,22 +244,22 @@ export default function ReportsPage() {
                   transition={{ delay: i * 0.05 }}
                   className="hover:bg-white/3 transition-colors"
                 >
-                  <td className="px-4 py-3 text-xs text-slate-400 font-mono">{p.image}</td>
+                  <td className="px-4 py-3 text-xs text-cyan-400/70 font-mono">{p.image}</td>
                   <td className="px-4 py-3">
-                    <span className={`text-xs font-medium ${p.model === 'EdgeVisionNet' ? 'text-cyan-400' : 'text-slate-300'}`}>{p.model}</span>
+                    <span className={`text-xs font-medium ${p.model === 'EdgeVisionNet' ? 'text-cyan-400' : 'text-cyan-400/90'}`}>{p.model}</span>
                   </td>
-                  <td className="px-4 py-3 text-sm font-semibold text-slate-200">{p.class}</td>
+                  <td className="px-4 py-3 text-sm font-semibold text-cyan-400">{p.class}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-12 bg-white/5 rounded-full h-1.5">
-                        <div className="h-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500" style={{ width: `${p.conf * 100}%` }} />
+                      <div className="w-12 bg-cyan-400/5 rounded-none h-1.5">
+                        <div className="h-1.5 rounded-none bg-gradient-to-r from-cyan-400 to-purple-500" style={{ width: `${p.conf * 100}%` }} />
                       </div>
-                      <span className="text-xs text-slate-300">{(p.conf * 100).toFixed(1)}%</span>
+                      <span className="text-xs text-cyan-400/90">{(p.conf * 100).toFixed(1)}%</span>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-xs text-purple-400 font-mono">{p.latency}ms</td>
                   <td className="px-4 py-3 text-xs text-amber-400 font-mono">{(p.energy * 1e6).toFixed(2)}µWh</td>
-                  <td className="px-4 py-3 text-xs text-slate-500">{p.time}</td>
+                  <td className="px-4 py-3 text-xs text-cyan-400/50">{p.time}</td>
                   <td className="px-4 py-3">
                     <span className="badge-online text-[10px]">✓ Success</span>
                   </td>

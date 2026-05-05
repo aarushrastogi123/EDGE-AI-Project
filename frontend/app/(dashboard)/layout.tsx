@@ -3,7 +3,6 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
-import Sidebar from '@/components/Sidebar'
 import Navbar from '@/components/Navbar'
 import { usePathname } from 'next/navigation'
 
@@ -30,13 +29,13 @@ function DashboardGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0F1E] flex items-center justify-center">
+      <div className="min-h-screen bg-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="relative w-16 h-16">
-            <div className="absolute inset-0 rounded-full border-2 border-cyan-500/20 border-t-cyan-400 animate-spin" />
-            <div className="absolute inset-3 rounded-full border border-purple-500/20 border-b-purple-400 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
+            <div className="absolute inset-0 rounded-none border-2 border-cyan-400/20 border-t-cyan-400 animate-spin" />
+            <div className="absolute inset-3 rounded-none border border-purple-500/20 border-b-purple-400 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
           </div>
-          <p className="text-slate-500 text-sm">Authenticating…</p>
+          <p className="text-cyan-400/50 text-sm">Authenticating…</p>
         </div>
       </div>
     )
@@ -47,19 +46,16 @@ function DashboardGuard({ children }: { children: React.ReactNode }) {
   const meta = pageTitles[pathname] ?? { title: 'EdgeVisionNet', subtitle: '' }
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E]">
+    <div className="min-h-screen bg-bg">
       {/* Ambient background */}
       <div className="fixed top-0 left-0 right-0 h-[600px] pointer-events-none z-0"
-           style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.04) 0%, transparent 70%)' }} />
-
-      <Sidebar />
+           style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.04) 0%, transparent 70%)' }} />
 
       {/* Main content area */}
-      <div className="lg:pl-60 min-h-screen flex flex-col">
-        <div className="pt-14 lg:pt-0" />
+      <div className="min-h-screen flex flex-col pt-16">
         <Navbar title={meta.title} subtitle={meta.subtitle} />
-        <main className="flex-1 relative z-10">
-          <div className="p-6 max-w-7xl mx-auto">
+        <main className="flex-1 relative z-10 pt-4">
+          <div className="p-6 max-w-7xl mx-auto w-full">
             {children}
           </div>
         </main>

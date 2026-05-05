@@ -71,7 +71,7 @@ export default function ComparePage() {
 
   const TH = ({ k, label }: { k: SortKey; label: string }) => (
     <th
-      className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-200 select-none"
+      className="px-4 py-3 text-left text-xs font-medium text-cyan-400/70 uppercase tracking-wider cursor-pointer hover:text-cyan-400 select-none"
       onClick={() => sortModels(k)}
     >
       <span className="flex items-center gap-1">{label} <SortIcon k={k} /></span>
@@ -81,17 +81,17 @@ export default function ComparePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-100">
-          Edge vs <span className="gradient-text">Cloud</span> Comparison
+        <h1 className="text-2xl font-bold text-cyan-400">
+          Edge vs <span className="text-glow-cyan text-cyan-400 uppercase tracking-widest font-mono">Cloud</span> Comparison
         </h1>
-        <p className="text-sm text-slate-500 mt-0.5">
+        <p className="text-sm text-cyan-400/50 mt-0.5">
           Energy savings, CO₂ reduction, and model benchmark analytics
         </p>
       </div>
 
       {loading ? (
         <div className="space-y-4">
-          {[0, 1, 2].map((i) => <div key={i} className="skeleton h-40 rounded-2xl" />)}
+          {[0, 1, 2].map((i) => <div key={i} className="skeleton h-40 rounded-none" />)}
         </div>
       ) : (
         <>
@@ -109,11 +109,11 @@ export default function ComparePage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 }}
-                  className="glass-card p-5"
+                  className="scifi-card p-5"
                 >
                   <div className={`${card.color} mb-3`}>{card.icon}</div>
                   <p className={`text-2xl font-bold ${card.color}`}>{card.value}</p>
-                  <p className="text-xs font-medium text-slate-300 mt-1">{card.label}</p>
+                  <p className="text-xs font-medium text-cyan-400/90 mt-1">{card.label}</p>
                   <p className="text-xs text-slate-600 mt-0.5">{card.sub}</p>
                 </motion.div>
               ))}
@@ -124,8 +124,8 @@ export default function ComparePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Power comparison bar chart */}
             {comparison && (
-              <div className="glass-card p-5">
-                <h3 className="text-sm font-semibold text-slate-300 mb-4">
+              <div className="scifi-card p-5">
+                <h3 className="text-sm font-semibold text-cyan-400/90 mb-4">
                   Power Consumption Comparison (W)
                 </h3>
                 <ResponsiveContainer width="100%" height={200}>
@@ -147,8 +147,8 @@ export default function ComparePage() {
 
             {/* Projection table */}
             {comparison && (
-              <div className="glass-card p-5">
-                <h3 className="text-sm font-semibold text-slate-300 mb-4">Energy Savings Projection</h3>
+              <div className="scifi-card p-5">
+                <h3 className="text-sm font-semibold text-cyan-400/90 mb-4">Energy Savings Projection</h3>
                 <div className="space-y-3">
                   {[
                     { label: 'Daily Energy Saved',    value: `${(comparison.daily_kwh * 1000).toFixed(4)} Wh`,  icon: <TrendingDown size={14} className="text-emerald-400" /> },
@@ -157,11 +157,11 @@ export default function ComparePage() {
                     { label: 'Monthly CO₂ Reduction', value: `${comparison.monthly_co2_kg.toFixed(4)} kg`,         icon: <Leaf size={14} className="text-emerald-400" /> },
                     { label: 'Assumption',            value: `${comparison.daily_inferences} inferences/day`,      icon: <BarChart3 size={14} className="text-cyan-400" /> },
                   ].map((row) => (
-                    <div key={row.label} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-                      <div className="flex items-center gap-2 text-sm text-slate-400">
+                    <div key={row.label} className="flex items-center justify-between py-2 border-b border-cyan-400/20 last:border-0">
+                      <div className="flex items-center gap-2 text-sm text-cyan-400/70">
                         {row.icon} {row.label}
                       </div>
-                      <span className="text-sm font-semibold text-slate-200">{row.value}</span>
+                      <span className="text-sm font-semibold text-cyan-400">{row.value}</span>
                     </div>
                   ))}
                 </div>
@@ -171,8 +171,8 @@ export default function ComparePage() {
 
           {/* Energy Report */}
           {report && (
-            <div className="glass-card p-5 border border-emerald-500/20">
-              <h3 className="text-sm font-semibold text-slate-300 mb-4">Your Energy Usage Report</h3>
+            <div className="scifi-card p-5 border border-emerald-500/20">
+              <h3 className="text-sm font-semibold text-cyan-400/90 mb-4">Your Energy Usage Report</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
                 {[
                   { label: 'Total Predictions', value: report.total_predictions.toString(), color: 'text-cyan-400' },
@@ -184,7 +184,7 @@ export default function ComparePage() {
                 ].map((item) => (
                   <div key={item.label}>
                     <p className={`text-lg font-bold ${item.color}`}>{item.value}</p>
-                    <p className="text-[10px] text-slate-500 mt-0.5">{item.label}</p>
+                    <p className="text-[10px] text-cyan-400/50 mt-0.5">{item.label}</p>
                   </div>
                 ))}
               </div>
@@ -192,10 +192,10 @@ export default function ComparePage() {
           )}
 
           {/* Model Benchmark Table */}
-          <div className="glass-card overflow-hidden">
-            <div className="px-5 py-4 border-b border-white/5">
-              <h3 className="text-sm font-semibold text-slate-300">Model Analytics — Benchmark Comparison</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Click column headers to sort</p>
+          <div className="scifi-card overflow-hidden">
+            <div className="px-5 py-4 border-b border-cyan-400/20">
+              <h3 className="text-sm font-semibold text-cyan-400/90">Model Analytics — Benchmark Comparison</h3>
+              <p className="text-xs text-cyan-400/50 mt-0.5">Click column headers to sort</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -206,7 +206,7 @@ export default function ComparePage() {
                     <TH k="avg_latency_ms" label="Latency (ms)" />
                     <TH k="model_size_mb"  label="Size (MB)"    />
                     <TH k="energy_wh"      label="Energy/inf"   />
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Description</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-cyan-400/70 uppercase tracking-wider">Description</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -223,7 +223,7 @@ export default function ComparePage() {
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-2">
                           <span className={`font-semibold text-sm ${
-                            m.model === 'EdgeVisionNet' ? 'text-cyan-400' : 'text-slate-200'
+                            m.model === 'EdgeVisionNet' ? 'text-cyan-400' : 'text-cyan-400'
                           }`}>{m.model}</span>
                           {m.model === 'EdgeVisionNet' && (
                             <span className="px-1.5 py-0.5 bg-cyan-500/20 border border-cyan-500/30 rounded text-[10px] text-cyan-400">★ Edge</span>
@@ -232,16 +232,16 @@ export default function ComparePage() {
                       </td>
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-2">
-                          <div className="w-16 bg-white/5 rounded-full h-1.5">
-                            <div className="h-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500" style={{ width: `${m.accuracy}%` }} />
+                          <div className="w-16 bg-cyan-400/5 rounded-none h-1.5">
+                            <div className="h-1.5 rounded-none bg-gradient-to-r from-blue-400 to-transparent" style={{ width: `${m.accuracy}%` }} />
                           </div>
-                          <span className="text-sm text-slate-300">{m.accuracy}%</span>
+                          <span className="text-sm text-cyan-400/90">{m.accuracy}%</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3.5 text-sm text-slate-300">{m.avg_latency_ms} ms</td>
-                      <td className="px-4 py-3.5 text-sm text-slate-300">{m.model_size_mb} MB</td>
-                      <td className="px-4 py-3.5 text-sm text-slate-300">{(m.energy_wh * 1e6).toFixed(2)} µWh</td>
-                      <td className="px-4 py-3.5 text-xs text-slate-500 max-w-xs">{m.description}</td>
+                      <td className="px-4 py-3.5 text-sm text-cyan-400/90">{m.avg_latency_ms} ms</td>
+                      <td className="px-4 py-3.5 text-sm text-cyan-400/90">{m.model_size_mb} MB</td>
+                      <td className="px-4 py-3.5 text-sm text-cyan-400/90">{(m.energy_wh * 1e6).toFixed(2)} µWh</td>
+                      <td className="px-4 py-3.5 text-xs text-cyan-400/50 max-w-xs">{m.description}</td>
                     </motion.tr>
                   ))}
                 </tbody>
