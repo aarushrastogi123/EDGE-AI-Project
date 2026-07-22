@@ -65,6 +65,9 @@ export const telemetryAPI = {
   history: (deviceId = 'laptop_01', hours = 1) =>
     api.get('/history', { params: { device_id: deviceId, hours } }),
 
+  summary: (deviceId = 'laptop_01', hours = 24) =>
+    api.get('/telemetry/summary', { params: { device_id: deviceId, hours } }),
+
   devices: () => api.get('/devices'),
 
   registerDevice: (deviceId: string, deviceName: string, deviceType = 'laptop') =>
@@ -88,13 +91,24 @@ export const predictionAPI = {
     })
   },
 
+  predictMulti: (file: File, deviceId = 'laptop_01') => {
+    const form = new FormData()
+    form.append('file', file)
+    form.append('device_id', deviceId)
+    return api.post('/predict/multi', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
+
+  samples: () => api.get('/predict/samples'),
+
   history: (limit = 50) => api.get('/predictions', { params: { limit } }),
 
   modelStats: () => api.get('/model-stats'),
 }
 
 // ---------------------------------------------------------------------------
-// Energy / Comparison
+// Energy / Comparison & Reports
 // ---------------------------------------------------------------------------
 
 export const energyAPI = {
@@ -102,4 +116,12 @@ export const energyAPI = {
     api.get('/comparison', { params: { device_id: deviceId } }),
 
   report: () => api.get('/energy-report'),
+}
+
+export const reportsAPI = {
+  exportTelemetryUrl: (deviceId = 'laptop_01', hours = 24) =>
+    `${BASE_URL}/reports/export/telemetry?device_id=${deviceId}&hours=${hours}`,
+
+  exportPredictionsUrl: (limit = 200) =>
+    `${BASE_URL}/reports/export/predictions?limit=${limit}`,
 }

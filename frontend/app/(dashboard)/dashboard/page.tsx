@@ -51,6 +51,7 @@ const AI_INSIGHTS = [
 export default function DashboardPage() {
   const [live,        setLive]        = useState<Telemetry | null>(null)
   const [chartData,   setChartData]   = useState<TelemetryHistory[]>([])
+  const [summary,     setSummary]     = useState<any | null>(null)
   const [loading,     setLoading]     = useState(true)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [alert,       setAlert]       = useState<string | null>(null)
@@ -61,9 +62,13 @@ export default function DashboardPage() {
 
   const fetchLive = useCallback(async () => {
     try {
-      const res  = await telemetryAPI.live(DEVICE_ID)
-      const data: Telemetry = res.data
+      const [liveRes, summaryRes] = await Promise.all([
+        telemetryAPI.live(DEVICE_ID),
+        telemetryAPI.summary(DEVICE_ID, 24).catch(() => null),
+      ])
+      const data: Telemetry = liveRes.data
       setLive(data)
+      if (summaryRes?.data) setSummary(summaryRes.data)
       setIsMock(false)
       setLastUpdated(new Date())
       setLoading(false)

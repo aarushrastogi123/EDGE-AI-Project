@@ -86,18 +86,14 @@ const tooltipStyle = {
 export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState<'weekly' | 'monthly'>('weekly')
 
-  const exportCSV = () => {
-    const rows = recentPredictions.map(p =>
-      `${p.id},${p.image},${p.model},${p.class},${(p.conf * 100).toFixed(1)}%,${p.latency}ms,${(p.energy * 1e6).toFixed(2)}µWh,${p.time}`
-    )
-    const csv = `ID,Image,Model,Class,Confidence,Latency,Energy,Time\n${rows.join('\n')}`
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url  = URL.createObjectURL(blob)
-    const a    = document.createElement('a')
-    a.href     = url
-    a.download = `evn_report_${new Date().toISOString().slice(0, 10)}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
+  const exportPredictionsCSV = () => {
+    const { reportsAPI } = require('@/lib/api')
+    window.open(reportsAPI.exportPredictionsUrl(500), '_blank')
+  }
+
+  const exportTelemetryCSV = () => {
+    const { reportsAPI } = require('@/lib/api')
+    window.open(reportsAPI.exportTelemetryUrl('laptop_01', 168), '_blank')
   }
 
   return (
@@ -115,22 +111,31 @@ export default function ReportsPage() {
         </div>
         <div className="flex items-center gap-2">
           <motion.button
-            id="report-export-csv"
+            id="report-export-telemetry-csv"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={exportCSV}
-            className="btn-secondary px-4 py-2 rounded-none flex items-center gap-2 text-sm"
+            onClick={exportTelemetryCSV}
+            className="btn-secondary px-3.5 py-2 text-xs font-mono rounded-none flex items-center gap-1.5"
           >
-            <Download size={14} /> Export CSV
+            <Download size={13} /> Export Telemetry CSV
+          </motion.button>
+          <motion.button
+            id="report-export-predictions-csv"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={exportPredictionsCSV}
+            className="btn-secondary px-3.5 py-2 text-xs font-mono rounded-none flex items-center gap-1.5"
+          >
+            <Download size={13} /> Export AI Logs CSV
           </motion.button>
           <motion.button
             id="report-export-pdf"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => window.print()}
-            className="btn-primary px-4 py-2 rounded-none flex items-center gap-2 text-sm relative z-10"
+            className="btn-primary px-4 py-2 rounded-none flex items-center gap-2 text-xs font-mono relative z-10"
           >
-            <Printer size={14} /> PDF Report
+            <Printer size={13} /> Print PDF
           </motion.button>
         </div>
       </div>

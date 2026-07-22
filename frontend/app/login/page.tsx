@@ -99,18 +99,49 @@ function LoginForm() {
               </div>
             </div>
 
-            <motion.button
-              id="login-submit-btn"
-              type="submit"
-              disabled={loading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="btn-primary w-full py-3.5 text-sm font-semibold flex items-center justify-center gap-2 mt-2"
-            >
-              {loading
-                ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-none animate-spin" />
-                : <><span>Sign In</span> <ArrowRight size={16} /></>}
-            </motion.button>
+            <div className="flex gap-2">
+              <motion.button
+                id="login-submit-btn"
+                type="submit"
+                disabled={loading}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="btn-primary flex-1 py-3 text-sm font-semibold flex items-center justify-center gap-2"
+              >
+                {loading
+                  ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-none animate-spin" />
+                  : <><span>Sign In</span> <ArrowRight size={16} /></>}
+              </motion.button>
+
+              <motion.button
+                id="demo-login-btn"
+                type="button"
+                disabled={loading}
+                onClick={async () => {
+                  setLoading(true)
+                  setError('')
+                  try {
+                    // Try login first, if fail auto signup
+                    try {
+                      await login('demo@edgevisionnet.ai', 'demo123456')
+                    } catch {
+                      const { authAPI } = await import('@/lib/api')
+                      await authAPI.signup('Demo Engineer', 'demo@edgevisionnet.ai', 'demo123456')
+                      await login('demo@edgevisionnet.ai', 'demo123456')
+                    }
+                  } catch (err: any) {
+                    setError('Demo login failed.')
+                  } finally {
+                    setLoading(false)
+                  }
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="btn-secondary py-3 px-4 text-xs font-mono text-cyan-400 border-cyan-400/40 hover:border-cyan-400 flex items-center justify-center gap-1.5"
+              >
+                <Zap size={14} className="text-amber-400" /> Demo Access
+              </motion.button>
+            </div>
           </form>
 
           {/* Divider */}

@@ -5,7 +5,7 @@ SQLAlchemy ORM with SQLite (upgrade-ready to PostgreSQL).
 
 from sqlalchemy import (
     create_engine, Column, Integer, Float, String,
-    Boolean, DateTime, ForeignKey, Text
+    Boolean, DateTime, ForeignKey, Text, Index
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
@@ -79,6 +79,10 @@ class Telemetry(Base):
 
     device = relationship("Device", back_populates="telemetry_records")
 
+    __table_args__ = (
+        Index("idx_telemetry_device_time", "device_id", "timestamp"),
+    )
+
 
 class Prediction(Base):
     """Record of a single AI inference run."""
@@ -95,6 +99,10 @@ class Prediction(Base):
     timestamp       = Column(DateTime, default=datetime.utcnow, index=True)
 
     user = relationship("User", back_populates="predictions")
+
+    __table_args__ = (
+        Index("idx_predictions_user_time", "user_id", "timestamp"),
+    )
 
 
 # ---------------------------------------------------------------------------

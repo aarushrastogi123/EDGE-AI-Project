@@ -16,6 +16,7 @@ from database import User, get_db, init_db
 from auth import hash_password, verify_password, create_access_token, get_current_user
 from telemetry import router as telemetry_router
 from prediction import router as prediction_router
+from reports import router as reports_router
 
 # ---------------------------------------------------------------------------
 # App Initialisation
@@ -34,7 +35,7 @@ app = FastAPI(
 # ---------------------------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins     = ["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins     = ["http://localhost:3000", "http://127.0.0.1:3000", "*"],
     allow_credentials = True,
     allow_methods     = ["*"],
     allow_headers     = ["*"],
@@ -45,6 +46,7 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 app.include_router(telemetry_router)
 app.include_router(prediction_router)
+app.include_router(reports_router)
 
 
 # ---------------------------------------------------------------------------

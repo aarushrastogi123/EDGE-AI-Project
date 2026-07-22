@@ -165,15 +165,15 @@ def run_agent(backend: str, device_id: str, interval: int):
             consecutive_failures = 0
 
             # Console output
-            status_icon = "🔋" if payload["charging"] else "🔌"
-            anomaly_icon = " ⚠️ POWER SPIKE" if data.get("anomaly") else ""
-            overheat_icon = " 🌡️ OVERHEAT" if data.get("overheat") else ""
+            status_icon = "[CHARGING]" if payload["charging"] else "[BATTERY]"
+            anomaly_icon  = " [ANOMALY]"  if data.get("anomaly")  else ""
+            overheat_icon = " [OVERHEAT]" if data.get("overheat") else ""
             print(
                 f"[{datetime.now().strftime('%H:%M:%S')}] "
                 f"CPU:{metrics['cpu']:5.1f}%  "
                 f"RAM:{metrics['ram']:5.1f}%  "
                 f"BAT:{metrics['battery']:5.1f}% {status_icon}  "
-                f"TEMP:{metrics['temp']:5.1f}°C  "
+                f"TEMP:{metrics['temp']:5.1f}C  "
                 f"PWR:{data['power_w']:5.2f}W"
                 f"{anomaly_icon}{overheat_icon}"
             )
@@ -182,17 +182,17 @@ def run_agent(backend: str, device_id: str, interval: int):
             consecutive_failures += 1
             print(
                 f"[{datetime.now().strftime('%H:%M:%S')}] "
-                f"⚡ Cannot connect to {backend}. "
+                f"[CONNECT FAILURE] Cannot connect to {backend}. "
                 f"Retry {consecutive_failures}... (is the backend running?)"
             )
             if consecutive_failures >= 5:
-                print("  ⚠️  5 consecutive failures. Check backend and try again.")
+                print("  [WARNING] 5 consecutive failures. Check backend and try again.")
 
         except requests.exceptions.Timeout:
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] ⏱️  Request timed out.")
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] [TIMEOUT] Request timed out.")
 
         except Exception as e:
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] ❌ Unexpected error: {e}")
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] [ERROR] Unexpected error: {e}")
 
         time.sleep(interval)
 

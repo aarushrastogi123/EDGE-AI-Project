@@ -264,3 +264,69 @@ def register_device(
     db.commit()
     db.refresh(device)
     return {"message": "Device registered.", "device_id": device.device_id}
+
+
+@router.get("/telemetry/summary", summary="Get aggregated metrics summary for a device")
+def get_telemetry_summary(
+    device_id: str = Query("laptop_01"),
+    hours: float = Query(24.0, ge=1.0, le=168.0),
+    db: Session = Depends(get_db),
+):
+    """
+    Returns aggregated metrics, total energy kWh, peak load, and health score.
+    """
+    since = datetime.utcnow() - timedelta(hours=hours)
+    records = (
+        db.query(Telemetry)
+        .filter(
+            Telemetry.device_id == device_id,
+            Telemetry.timestamp >= since,
+        )
+        .all()
+    )
+
+    if not records:
+        return {
+            "device_id": device_id,
+            "window_hours": hours,
+            "total_records": 0,
+            "avg_cpu": 0.0,
+            "avg_ram": 0.0,
+            "avg_temp": 0.0,
+            "peak_temp": 0.0,
+            "avg_power_w": 0.0,
+            "total_energy_kwh": 0.0,
+            "co2_generated_kg": 0.0,
+            "health_score": 100,
+        }
+
+    count = len(records)
+    avg_cpu = sum(r.cpu for r in records) / count
+    avg_ram = sum(r.ram for r in records) / count
+    avg_temp = sum(r.temp for r in records) / count
+    peak_temp = max(r.temp for r in records)
+    avg_power = sum(r.power_w for r in records) / count
+
+    # Total energy: avg_power (W) * hours / 1000 = kWh
+    total_energy_kwh = (avg_power * hours) / 1000.0
+    co2_kg = total_energy_kwh * 0.233
+
+    # Calculate thermal & efficiency health score (100 max)
+    temp_penalty = max(0.0, (peak_temp - 70.0) * 1.5)
+    cpu_penalty = max(0.0, (avg_cpu - 60.0) * 0.8)
+    health_score = max(10, int(100 - temp_penalty - cpu_penalty))
+
+    return {
+        "device_id": device_id,
+        "window_hours": hours,
+        "total_records": count,
+        "avg_cpu": round(avg_cpu, 1),
+        "avg_ram": round(avg_ram, 1),
+        "avg_temp": round(avg_temp, 1),
+        "peak_temp": round(peak_temp, 1),
+        "avg_power_w": round(avg_power, 2),
+        "total_energy_kwh": round(total_energy_kwh, 5),
+        "co2_generated_kg": round(co2_kg, 5),
+        "health_score": health_score,
+    }
+

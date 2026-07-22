@@ -128,6 +128,103 @@ async def predict(
     }
 
 
+@router.post("/predict/multi", summary="Run multi-model benchmark comparison on uploaded image")
+async def predict_multi(
+    file: UploadFile = File(..., description="Image file (JPEG/PNG)"),
+    device_id: str = Form("laptop_01"),
+    db: Session = Depends(get_db),
+):
+    """
+    Runs inference across all 4 supported models side-by-side on the uploaded image.
+    Returns comparative metrics including latency, confidence, energy, and optimal model pick.
+    """
+    if file.content_type not in ["image/jpeg", "image/png", "image/jpg", "image/webp"]:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported image type: {file.content_type}. Use JPEG or PNG.",
+        )
+
+    contents = await file.read()
+
+    last_record = (
+        db.query(Telemetry)
+        .filter(Telemetry.device_id == device_id)
+        .order_by(Telemetry.timestamp.desc())
+        .first()
+    )
+    current_power_w = last_record.power_w if last_record else estimate_power(30.0)
+
+    models_to_test = ["MobileNetV2", "EfficientNet-B0", "ShuffleNet", "EdgeVisionNet"]
+    results = []
+
+    for m_name in models_to_test:
+        try:
+            from ai.inference import run_inference
+            res = run_inference(contents, model_name=m_name)
+        except Exception:
+            res = _fallback_inference(m_name)
+
+        energy_wh = estimate_inference_energy(res["latency_ms"], current_power_w)
+        stats = MODEL_STATS.get(m_name, {})
+
+        results.append({
+            "model":           m_name,
+            "predicted_class": res["class"],
+            "confidence":      round(res["confidence"], 4),
+            "latency_ms":      round(res["latency_ms"], 2),
+            "energy_wh":       round(energy_wh, 8),
+            "model_size_mb":   stats.get("model_size_mb", 10.0),
+            "baseline_acc":    stats.get("accuracy", 70.0),
+        })
+
+    # Determine winners
+    fastest = min(results, key=lambda x: x["latency_ms"])["model"]
+    most_accurate = max(results, key=lambda x: x["confidence"])["model"]
+    lowest_energy = min(results, key=lambda x: x["energy_wh"])["model"]
+
+    return {
+        "timestamp":           datetime.utcnow().isoformat(),
+        "device_power_w":      round(current_power_w, 3),
+        "results":            results,
+        "fastest_model":       fastest,
+        "highest_conf_model": most_accurate,
+        "lowest_energy_model": lowest_energy,
+        "recommendation":      f"For edge efficiency, {lowest_energy} is recommended. For maximum accuracy, use {most_accurate}.",
+    }
+
+
+@router.get("/predict/samples", summary="Get preset sample images for instant demo testing")
+def get_sample_images():
+    """Returns preset demo sample image metadata."""
+    return [
+        {
+            "id": "sample_laptop",
+            "name": "Laptop Computer",
+            "category": "Electronics",
+            "url": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&auto=format&fit=crop&q=80",
+        },
+        {
+            "id": "sample_car",
+            "name": "Sports Car",
+            "category": "Vehicles",
+            "url": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&auto=format&fit=crop&q=80",
+        },
+        {
+            "id": "sample_dog",
+            "name": "Golden Retriever",
+            "category": "Animals",
+            "url": "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&auto=format&fit=crop&q=80",
+        },
+        {
+            "id": "sample_coffee",
+            "name": "Coffee Mug",
+            "category": "Objects",
+            "url": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&auto=format&fit=crop&q=80",
+        },
+    ]
+
+
+
 @router.get("/predictions", summary="Prediction history for authenticated user")
 def get_predictions(
     limit: int = 50,
