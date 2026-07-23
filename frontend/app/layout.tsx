@@ -30,7 +30,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-bg text-cyan-400 font-sans antialiased">
+      <body className="bg-bg text-white font-sans antialiased">
         {children}
       </body>
     </html>
